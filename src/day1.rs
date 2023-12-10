@@ -48,7 +48,6 @@ pub fn solve_part2(inputs: Vec<String>) -> u32 {
     inputs.iter().map(|s| get_calibration_value(s, true)).sum()
 }
 
-// Test part 1
 #[cfg(test)]
 mod tests {
     use super::*;

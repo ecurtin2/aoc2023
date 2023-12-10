@@ -1,5 +1,6 @@
 // Import day1
 mod day1;
+mod day2;
 use clap::Parser;
 use std::fmt;
 use std::fs;
@@ -84,6 +85,12 @@ fn solve_part(day: &Day, part: &Part) -> Result {
         }
         (Day::Day1, Part::Part2) => {
             Some(day1::solve_part2(load_file("data/day1.txt".to_string())) as i32)
+        }
+        (Day::Day2, Part::Part1) => {
+            Some(day2::solve_part1(load_file("data/day2.txt".to_string())) as i32)
+        }
+        (Day::Day2, Part::Part2) => {
+            Some(day2::solve_part2(load_file("data/day2.txt".to_string())) as i32)
         }
         _ => None,
     };

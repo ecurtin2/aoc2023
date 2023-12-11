@@ -5,9 +5,10 @@ mod day3;
 mod day4;
 mod day6;
 use clap::Parser;
+use microbench::{measure, statistics::Model, time::Nanoseconds, Analysis, Options, Sample};
 use std::fmt;
 use std::fs;
-use std::time::Instant;
+use std::time::Duration;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
@@ -34,27 +35,27 @@ enum Day {
     Day2 = 2,
     Day3 = 3,
     Day4 = 4,
-    Day5 = 5,
+    // Day5 = 5,
     Day6 = 6,
-    Day7 = 7,
-    Day8 = 8,
-    Day9 = 9,
-    Day10 = 10,
-    Day11 = 11,
-    Day12 = 12,
-    Day13 = 13,
-    Day14 = 14,
-    Day15 = 15,
-    Day16 = 16,
-    Day17 = 17,
-    Day18 = 18,
-    Day19 = 19,
-    Day20 = 20,
-    Day21 = 21,
-    Day22 = 22,
-    Day23 = 23,
-    Day24 = 24,
-    Day25 = 25,
+    // Day7 = 7,
+    // Day8 = 8,
+    // Day9 = 9,
+    // Day10 = 10,
+    // Day11 = 11,
+    // Day12 = 12,
+    // Day13 = 13,
+    // Day14 = 14,
+    // Day15 = 15,
+    // Day16 = 16,
+    // Day17 = 17,
+    // Day18 = 18,
+    // Day19 = 19,
+    // Day20 = 20,
+    // Day21 = 21,
+    // Day22 = 22,
+    // Day23 = 23,
+    // Day24 = 24,
+    // Day25 = 25,
 }
 impl fmt::Display for Day {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -77,56 +78,27 @@ struct Result {
     day: Day,
     part: Part,
     result: Option<i32>,
-    duration: std::time::Duration,
 }
 
 fn solve_part(day: &Day, part: &Part) -> Result {
-    let start = Instant::now();
+    let file = format!("data/day{}.txt", day);
+    let data = load_file(file);
     let result: Option<i32> = match (day, part) {
-        (Day::Day1, Part::Part1) => {
-            Some(day1::solve_part1(load_file("data/day1.txt".to_string())) as i32)
-        }
-        (Day::Day1, Part::Part2) => {
-            Some(day1::solve_part2(load_file("data/day1.txt".to_string())) as i32)
-        }
-        (Day::Day2, Part::Part1) => {
-            Some(day2::solve_part1(load_file("data/day2.txt".to_string())) as i32)
-        }
-        (Day::Day2, Part::Part2) => {
-            Some(day2::solve_part2(load_file("data/day2.txt".to_string())) as i32)
-        }
-        (Day::Day3, Part::Part1) => {
-            Some(day3::solve_part1(load_file("data/day3.txt".to_string())) as i32)
-        }
-        (Day::Day3, Part::Part2) => {
-            Some(day3::solve_part2(load_file("data/day3.txt".to_string())) as i32)
-        }
-        (Day::Day4, Part::Part1) => {
-            Some(day4::solve_part1(load_file("data/day4.txt".to_string())) as i32)
-        }
-        (Day::Day4, Part::Part2) => {
-            Some(day4::solve_part2(load_file("data/day4.txt".to_string())) as i32)
-        }
-        // (Day::Day5, Part::Part1) => {
-        //     Some(day5::solve_part1(load_file("data/day5.txt".to_string())) as i32)
-        // }
-        // (Day::Day5, Part::Part2) => {
-        //     Some(day5::solve_part2(load_file("data/day5.txt".to_string())) as i32)
-        // }
-        (Day::Day6, Part::Part1) => {
-            Some(day6::solve_part1(load_file("data/day6.txt".to_string())) as i32)
-        }
-        (Day::Day6, Part::Part2) => {
-            Some(day6::solve_part2(load_file("data/day6.txt".to_string())) as i32)
-        }
-        _ => None,
+        (Day::Day1, Part::Part1) => Some(day1::solve_part1(data) as i32),
+        (Day::Day1, Part::Part2) => Some(day1::solve_part2(data) as i32),
+        (Day::Day2, Part::Part1) => Some(day2::solve_part1(data) as i32),
+        (Day::Day2, Part::Part2) => Some(day2::solve_part2(data) as i32),
+        (Day::Day3, Part::Part1) => Some(day3::solve_part1(data) as i32),
+        (Day::Day3, Part::Part2) => Some(day3::solve_part2(data) as i32),
+        (Day::Day4, Part::Part1) => Some(day4::solve_part1(data) as i32),
+        (Day::Day4, Part::Part2) => Some(day4::solve_part2(data) as i32),
+        (Day::Day6, Part::Part1) => Some(day6::solve_part1(data) as i32),
+        (Day::Day6, Part::Part2) => Some(day6::solve_part2(data) as i32),
     };
-    let duration = start.elapsed();
     Result {
         day: *day,
         part: *part,
         result,
-        duration,
     }
 }
 
@@ -139,6 +111,19 @@ struct Args {
     day: Option<u32>,
     #[clap(short, long)]
     part: Option<u32>,
+}
+
+fn new_analysis(samples: &[Sample]) -> Analysis {
+    // Analysis::new is private i copy/pasted
+    let Model { alpha, beta, r2 } = samples
+        .iter()
+        .map(|m| (m.iterations as f64, m.elapsed.0 as f64))
+        .collect::<Model>();
+    Analysis {
+        alpha: Nanoseconds(alpha),
+        beta: Nanoseconds(beta),
+        r2,
+    }
 }
 
 fn main() {
@@ -160,19 +145,24 @@ fn main() {
         "|{:^5}|{:^6}|{:^10}| {:10}",
         "Day", "Part", "Result", "Duration"
     );
-    let line = format!("|{:-<5}|{:-<6}|{:-<10}|{:-<12}", "", "", "", "");
-    println!("{}", line);
-
-    let mut last_day = Day::Day1;
+    let line = format!("|{:-<5}|{:-<6}|{:-<10}|{:-<25}", "", "", "", "");
+    let mut last_day = Day::Day2;
     for (day, part) in parts_to_solve.iter() {
         let result = solve_part(day, part);
+        let options = Options::default().time(Duration::from_secs(1));
+        let samples = measure(&options, || solve_part(day, part));
+        let analysis = new_analysis(&samples);
         if let Some(r) = result.result {
             if day != &last_day {
                 println!("{}", line);
             }
             println!(
-                "|{:^5}|{:^6}|{:^10}| {:?}",
-                result.day, result.part, r, result.duration
+                "|{:^5}|{:^6}|{:^10}| {:7.2} μs (R² = {:4.3})",
+                result.day,
+                result.part,
+                r,
+                analysis.beta.0 / 1000.0,
+                analysis.r2
             );
         }
         last_day = *day;

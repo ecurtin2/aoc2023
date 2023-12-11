@@ -55,6 +55,7 @@ name = "aoc"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "microbench",
  "nom",
  "strum",
  "strum_macros",
@@ -126,6 +127,12 @@ name = "memchr"
 version = "2.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f665ee40bc4a3c5590afb1e9677db74a508659dfd71e126420da8274909a0167"
+
+[[package]]
+name = "microbench"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4c44e40aee4e6fd2f4257bb91e5948ce79285aeb949129448889cf2fbf6da0b"
 
 [[package]]
 name = "minimal-lexical"

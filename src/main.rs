@@ -3,6 +3,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day6;
 use clap::Parser;
 use std::fmt;
 use std::fs;
@@ -105,6 +106,18 @@ fn solve_part(day: &Day, part: &Part) -> Result {
         }
         (Day::Day4, Part::Part2) => {
             Some(day4::solve_part2(load_file("data/day4.txt".to_string())) as i32)
+        }
+        // (Day::Day5, Part::Part1) => {
+        //     Some(day5::solve_part1(load_file("data/day5.txt".to_string())) as i32)
+        // }
+        // (Day::Day5, Part::Part2) => {
+        //     Some(day5::solve_part2(load_file("data/day5.txt".to_string())) as i32)
+        // }
+        (Day::Day6, Part::Part1) => {
+            Some(day6::solve_part1(load_file("data/day6.txt".to_string())) as i32)
+        }
+        (Day::Day6, Part::Part2) => {
+            Some(day6::solve_part2(load_file("data/day6.txt".to_string())) as i32)
         }
         _ => None,
     };

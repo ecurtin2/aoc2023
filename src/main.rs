@@ -4,6 +4,7 @@ mod day2;
 mod day3;
 mod day4;
 mod day6;
+mod day7;
 use clap::Parser;
 use microbench::{measure, statistics::Model, time::Nanoseconds, Analysis, Options, Sample};
 use std::fmt;
@@ -37,7 +38,7 @@ enum Day {
     Day4 = 4,
     // Day5 = 5,
     Day6 = 6,
-    // Day7 = 7,
+    Day7 = 7,
     // Day8 = 8,
     // Day9 = 9,
     // Day10 = 10,
@@ -94,6 +95,8 @@ fn solve_part(day: &Day, part: &Part) -> Result {
         (Day::Day4, Part::Part2) => Some(day4::solve_part2(data) as i32),
         (Day::Day6, Part::Part1) => Some(day6::solve_part1(data) as i32),
         (Day::Day6, Part::Part2) => Some(day6::solve_part2(data) as i32),
+        (Day::Day7, Part::Part1) => Some(day7::solve_part1(data) as i32),
+        (Day::Day7, Part::Part2) => Some(day7::solve_part2(data) as i32),
     };
     Result {
         day: *day,

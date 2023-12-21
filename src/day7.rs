@@ -57,52 +57,54 @@ enum HandType {
     FiveOfAKind = 7,
 }
 
+impl From<[Card; 5]> for HandType {
+    fn from(cards: [Card; 5]) -> Self {
+        let mut counts: HashMap<Card, u64> = HashMap::new();
+        for card in cards.iter() {
+            let count = counts.entry(*card).or_insert(0);
+            *count += 1;
+        }
+
+        // If we have jokers, remove them from the counts
+        // Add the jokers to the counts of the most common card
+        let joker_count = counts.remove(&Card::Joker).unwrap_or(0);
+        // Edge case 5 jokers
+        if joker_count == 5 {
+            return HandType::FiveOfAKind;
+        }
+
+        // sort in descending order of count
+        let mut counts_vec: Vec<(Card, u64)> = counts.into_iter().collect();
+        counts_vec.sort_by(|a, b| b.1.cmp(&a.1));
+        counts_vec[0].1 += joker_count;
+        match counts_vec.len() {
+            1 => HandType::FiveOfAKind,
+            2 => {
+                if counts_vec[0].1 == 4 {
+                    HandType::FourOfAKind
+                } else {
+                    HandType::FullHouse
+                }
+            }
+            3 => {
+                if counts_vec[0].1 == 3 {
+                    HandType::ThreeOfAKind
+                } else {
+                    HandType::TwoPair
+                }
+            }
+            4 => HandType::OnePair,
+            5 => HandType::HighCard,
+            _ => panic!("Invalid number of cards"),
+        }
+    }
+}
+
 #[derive(Debug, Eq, PartialEq, PartialOrd)]
 struct Hand {
     // Card: an array of length 5 of cards
     cards: [Card; 5],
     hand_type: HandType,
-}
-
-fn hand_type(cards: [Card; 5]) -> HandType {
-    let mut counts: HashMap<Card, u64> = HashMap::new();
-    for card in cards.iter() {
-        let count = counts.entry(*card).or_insert(0);
-        *count += 1;
-    }
-
-    // If we have jokers, remove them from the counts
-    // Add the jokers to the counts of the most common card
-    let joker_count = counts.remove(&Card::Joker).unwrap_or(0);
-    // Edge case 5 jokers
-    if joker_count == 5 {
-        return HandType::FiveOfAKind;
-    }
-
-    // sort in descending order of count
-    let mut counts_vec: Vec<(Card, u64)> = counts.into_iter().collect();
-    counts_vec.sort_by(|a, b| b.1.cmp(&a.1));
-    counts_vec[0].1 += joker_count;
-    match counts_vec.len() {
-        1 => HandType::FiveOfAKind,
-        2 => {
-            if counts_vec[0].1 == 4 {
-                HandType::FourOfAKind
-            } else {
-                HandType::FullHouse
-            }
-        }
-        3 => {
-            if counts_vec[0].1 == 3 {
-                HandType::ThreeOfAKind
-            } else {
-                HandType::TwoPair
-            }
-        }
-        4 => HandType::OnePair,
-        5 => HandType::HighCard,
-        _ => panic!("Invalid number of cards"),
-    }
 }
 
 impl Hand {
@@ -111,8 +113,10 @@ impl Hand {
         for (i, c) in s.chars().enumerate() {
             cards[i] = Card::from_char(c, j_is_joker);
         }
-        let hand_type = hand_type(cards);
-        Hand { cards, hand_type }
+        Hand {
+            cards,
+            hand_type: cards.into(),
+        }
     }
 }
 

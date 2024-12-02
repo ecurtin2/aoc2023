@@ -1,10 +1,5 @@
-// Import day1
 mod day1;
-mod day2;
-mod day3;
-mod day4;
-mod day6;
-mod day7;
+
 use clap::Parser;
 use microbench::{measure, statistics::Model, time::Nanoseconds, Analysis, Options, Sample};
 use std::fmt;
@@ -33,12 +28,12 @@ impl fmt::Display for Part {
 #[derive(Debug, Clone, Copy, EnumIter, PartialEq)]
 enum Day {
     Day1 = 1,
-    Day2 = 2,
-    Day3 = 3,
-    Day4 = 4,
+    // Day2 = 2,
+    // Day3 = 3,
+    // Day4 = 4,
     // Day5 = 5,
-    Day6 = 6,
-    Day7 = 7,
+    // Day6 = 6,
+    // Day7 = 7,
     // Day8 = 8,
     // Day9 = 9,
     // Day10 = 10,
@@ -87,16 +82,18 @@ fn solve_part(day: &Day, part: &Part) -> Result {
     let result: Option<i32> = match (day, part) {
         (Day::Day1, Part::Part1) => Some(day1::solve_part1(data) as i32),
         (Day::Day1, Part::Part2) => Some(day1::solve_part2(data) as i32),
-        (Day::Day2, Part::Part1) => Some(day2::solve_part1(data) as i32),
-        (Day::Day2, Part::Part2) => Some(day2::solve_part2(data) as i32),
-        (Day::Day3, Part::Part1) => Some(day3::solve_part1(data) as i32),
-        (Day::Day3, Part::Part2) => Some(day3::solve_part2(data) as i32),
-        (Day::Day4, Part::Part1) => Some(day4::solve_part1(data) as i32),
-        (Day::Day4, Part::Part2) => Some(day4::solve_part2(data) as i32),
-        (Day::Day6, Part::Part1) => Some(day6::solve_part1(data) as i32),
-        (Day::Day6, Part::Part2) => Some(day6::solve_part2(data) as i32),
-        (Day::Day7, Part::Part1) => Some(day7::solve_part1(data) as i32),
-        (Day::Day7, Part::Part2) => Some(day7::solve_part2(data) as i32),
+        // (Day::Day2, Part::Part1) => Some(day2::solve_part1(data) as i32),
+        // (Day::Day2, Part::Part2) => Some(day2::solve_part2(data) as i32),
+        // (Day::Day3, Part::Part1) => Some(day3::solve_part1(data) as i32),
+        // (Day::Day3, Part::Part2) => Some(day3::solve_part2(data) as i32),
+        // (Day::Day4, Part::Part1) => Some(day4::solve_part1(data) as i32),
+        // (Day::Day4, Part::Part2) => Some(day4::solve_part2(data) as i32),
+        // (Day::Day6, Part::Part1) => Some(day6::solve_part1(data) as i32),
+        // (Day::Day6, Part::Part2) => Some(day6::solve_part2(data) as i32),
+        // (Day::Day7, Part::Part1) => Some(day7::solve_part1(data) as i32),
+        // (Day::Day7, Part::Part2) => Some(day7::solve_part2(data) as i32),
+        // (Day::Day8, Part::Part1) => Some(day8::solve_part1(data) as i32),
+        // (Day::Day8, Part::Part2) => Some(day8::solve_part2(data) as i32),
     };
     Result {
         day: *day,
@@ -149,7 +146,7 @@ fn main() {
         "Day", "Part", "Result", "Duration"
     );
     let line = format!("|{:-<5}|{:-<6}|{:-<10}|{:-<25}", "", "", "", "");
-    let mut last_day = Day::Day2;
+    let mut last_day = Day::Day1;
     for (day, part) in parts_to_solve.iter() {
         let result = solve_part(day, part);
         let options = Options::default().time(Duration::from_secs(1));
